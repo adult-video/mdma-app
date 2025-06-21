@@ -33,10 +33,8 @@ module.exports = {
           {label: "Tempo Down",acc: "CMD+Shift+Numsub"}
         ],
         [
-          {label: "Jump 100ms Back",acc: "Option+Left"},
-          {label: "Jump 100ms Ahead",acc: "Option+Right"},
-          {label: "Jump 10ms Back",acc: "CMD+Shift+Option+Left"},
-          {label: "Jump 10ms Ahead",acc: "CMD+Shift+Option+Right"},
+          {label: "Forwards",acc: "CMD+Shift+Right"},
+          {label: "Backwards", acc: "CMD+Shift+Left"}
         ]
       ]
     },

@@ -1,8 +1,8 @@
-import {ACIDWrapper} from "../cores/acid-core/js/acidWrapper.js"
-import {TRAMWrapper} from "../cores/tram-core/js/tramWrapper.js"
-import {IOWrapper} from "../cores/av-core/js/frontend/ioWrapper.js"
-import {GUIWrapper} from "../cores/av-core/js/frontend/guiWrapper.js"
-import {FSWrapper} from "../cores/av-core/js/frontend/fsWrapper.js"
+import {ACIDWrapper} from "../submodules/acid/js/acidWrapper.js"
+import {TRAMWrapper} from "../submodules/tram/js/tramWrapper.js"
+import {IOWrapper} from "../submodules/av/js/frontend/ioWrapper.js"
+import {GUIWrapper} from "../submodules/av/js/frontend/guiWrapper.js"
+import {FSWrapper} from "../submodules/av/js/frontend/fsWrapper.js"
 
 const ipc = require("electron").ipcRenderer
 
@@ -14,7 +14,6 @@ window.addEventListener("DOMContentLoaded",function(){
 
   let fs = new FSWrapper(function(){
     FILE = fs.get()
-    console.log(FILE)
     initGUI()
     save()
     document.body.classList.remove("preload")
@@ -35,7 +34,9 @@ window.addEventListener("DOMContentLoaded",function(){
       filename.blur()
       filename.innerText = FILE.filename
     }
-    FILE.shader = acid.update(FILE)
+    let a = acid.update(FILE)
+    FILE.acid.shader = a.shader
+    FILE.acid.parameters = a.parameters
     tram.update(FILE)
     gui.update(FILE)
   }
@@ -56,7 +57,11 @@ window.addEventListener("DOMContentLoaded",function(){
       save()
     })
     input.addEventListener("keydown",function(e){
-      if(e.keyCode == 9){
+      console.log(e)
+      if(
+        e.keyCode == 9 ||
+        (e.keyCode == 37 || e.keyCode == 39) && e.shiftKey && e.metaKey
+      ){
         e.preventDefault()
       }
     })
@@ -156,22 +161,14 @@ window.addEventListener("DOMContentLoaded",function(){
       FILE.transport.stopped = true 
       save()
     }.bind(this),
-    jump100msahead: function(){
+    forwards: function(){
       FILE.transport.delay += 100
       save()
     },
-    jump100msback: function(){
+    backwards: function(){
       FILE.transport.delay -= 100
       save()
-    },
-    jump10msahead: function(){
-      FILE.transport.delay += 10
-      save()
-    },
-    jump10msback: function(){
-      FILE.transport.delay -= 10
-      save()
-    },
+    }
   }
 
   const displays = {

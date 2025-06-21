@@ -27,7 +27,6 @@ export class FSWrapper{
 	      }
 	      else{
 	      	let content = JSON.parse(data)
-	      	console.log(content)
 	      	this.#FILE.type = content.filetype
 	        this.#FILE.content = content
 	        this.#FILE.name = content.filename

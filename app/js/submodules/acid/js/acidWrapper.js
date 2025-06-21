@@ -34,7 +34,10 @@ export class ACIDWrapper{
   	#refresh(config){
       	let n = this.ACID.update(config.input)
       	this.#shaders.main = this.#shaders.main.slice(0,this.#shaders.main.indexOf("gl_FragColor")) + "gl_FragColor =" + n + ";}"
-      	this.GL.refresh(this.#shaders,config)
-      	return n
+      	let p = this.GL.refresh(this.#shaders,config)
+      	return {
+      		shader: n,
+      		parameters: p
+      	}
   	}
 }

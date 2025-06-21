@@ -17,10 +17,10 @@ export class ACIDViewer{
     	this.GL = new GLWrapper(this.#canvas,this.#shaders)
   	}
   	update(config){
-  		this.#refresh(config.shader)
+  		this.#refresh(config)
   	}
-  	#refresh(shader){
-      	this.#shaders.main = this.#shaders.main.slice(0,this.#shaders.main.indexOf("gl_FragColor")) + "gl_FragColor =" + shader + ";}"
-      	this.GL.refresh(this.#shaders)
+  	#refresh(config){
+      	this.#shaders.main = this.#shaders.main.slice(0,this.#shaders.main.indexOf("gl_FragColor")) + "gl_FragColor =" + config.acid.shader + ";}"
+      	this.GL.refresh(this.#shaders,config,config.acid.parameters)
   	}
 }

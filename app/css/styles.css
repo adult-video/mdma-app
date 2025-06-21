@@ -76,6 +76,10 @@ canvas{
   overflow-y: auto;
   text-align: left;
 }
+.editor #input{
+  top: 0;
+  height: 100%;
+}
 #input *{
   font-family: "Monospace",monospace !important;
   font-style: normal !important;

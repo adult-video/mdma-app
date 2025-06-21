@@ -1,9 +1,11 @@
 export class ACID{
 	#seed = 0
+	#fixedseed = 0
 	#glWrapper
 
 	constructor(seed,glWrapper) {
-    	this.#seed = seed || 0;
+    	this.#seed = seed || 0
+    	this.#fixedseed = this.#seed
     	this.#glWrapper = glWrapper
     	this.#init()
   	}
@@ -108,7 +110,7 @@ export class ACID{
 	    lines = _lines
 	    lines = lines.map((l) => l.split(""))
 	    let bitmap = string.replaceAll("\n","").split("").map((c) => c == " " ? 0.0 : Math.max(0,Math.min(((c.charCodeAt(0) - 65) / 26),1)))
-	    this.#glWrapper.parameters.bitmap = new Float32Array(bitmap)
+	    this.#glWrapper.parameters.bitmap = bitmap
 	    this.#glWrapper.parameters.bitmapSize = this.#glWrapper.parameters.bitmap.length
 	    let RGB = [["0.0"],["0.0"],["0.0"]]
 	    for(let l = 0; l < lines.length; l++){
@@ -136,8 +138,9 @@ export class ACID{
 	      }
 	    }
 
-	    this.#glWrapper.parameters.slBitmaps = new Float32Array(slBitmaps.flat())
-      	this.#glWrapper.parameters.slBitmapSizes = new Float32Array(slBitmapSizes)
+	    this.#glWrapper.parameters.slBitmaps = slBitmaps.flat()
+      	this.#glWrapper.parameters.slBitmapSizes = slBitmapSizes
+      	this.#seed = this.#fixedseed
 	    return "vec4(mod(" + RGB[0].join(" + ") + ",1.0001),mod(" + RGB[1].join(" + ") + ",1.0001),mod(" + RGB[2].join(" + ") + ",1.0001),1.0)"
   	}
   	#convertLineToShader(line,n){

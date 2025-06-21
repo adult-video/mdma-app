@@ -1,7 +1,12 @@
 module.exports = {
+	filename: "",
+	filetype: "mdma",
 	input: "",
-	shader: "",
-	io: "",
+	io: {},
+	acid: {
+		shader: "",
+		config: {}
+	},
 	transport: {
 		running: false,
 		stopped: true,

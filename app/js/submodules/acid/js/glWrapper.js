@@ -86,11 +86,17 @@ export class GLWrapper{
     }
     window.requestAnimationFrame(this.#animate.bind(this))
   }
-  refresh(shaders,config){
-    this.parameters.running = config.transport.running
-    this.parameters.delay = config.transport.delay
-    if(config.transport.stopped){
-      this.parameters.startTime = new Date().getTime()
+  refresh(shaders,config,parameters){
+    if(parameters){
+      this.parameters = parameters
+      console.log(this.parameters)
+    }
+    else{
+      this.parameters.running = config.transport.running
+      this.parameters.delay = config.transport.delay
+      if(config.transport.stopped){
+        this.parameters.startTime = new Date().getTime()
+      }
     }
     this.#locations.vertex_shader = shaders.vertex
     this.#locations.fragment_shader = shaders.helper + "\n" + shaders.main
@@ -111,6 +117,7 @@ export class GLWrapper{
     if(!this.parameters.running){
       this.#render()
     }
+    return this.parameters
   } 
   #createShader( src, type ) {
     let shader = this.#gl.createShader(type)
@@ -142,10 +149,10 @@ export class GLWrapper{
     this.#gl.uniform2f(this.#locations.mouseLocation,this.parameters.mouseX,this.parameters.mouseY)
     this.#gl.uniform1f(this.#locations.seedLocation,this.parameters.seed)
     this.#gl.uniform1f(this.#locations.sizeLocation,this.parameters.screenSize)
-    this.#gl.uniform1fv(this.#locations.bitmapLocation,this.parameters.bitmap)
+    this.#gl.uniform1fv(this.#locations.bitmapLocation,new Float32Array(this.parameters.bitmap))
     this.#gl.uniform1i(this.#locations.bitmapSizeLocation,this.parameters.bitmapSize)
-    this.#gl.uniform1fv(this.#locations.slBitmapsLocation,this.parameters.slBitmaps)
-    this.#gl.uniform1fv(this.#locations.slBitmapSizesLocation,this.parameters.slBitmapSizes)
+    this.#gl.uniform1fv(this.#locations.slBitmapsLocation,new Float32Array(this.parameters.slBitmaps))
+    this.#gl.uniform1fv(this.#locations.slBitmapSizesLocation,new Float32Array(this.parameters.slBitmapSizes))
     this.#gl.uniform1i(this.#locations.spacePressedLocation,this.parameters.spacePressed)
     this.#gl.bindBuffer(this.#gl.ARRAY_BUFFER,this.#locations.buffer)
     this.#gl.vertexAttribPointer(this.#locations.vertexPosition,2,this.#gl.FLOAT,false,0,0)

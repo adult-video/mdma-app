@@ -1,4 +1,4 @@
-const {app,Menu} = require("electron")
+const {app,Menu,globalShortcut} = require("electron")
 
 module.exports = class MenuManager{
 
@@ -121,6 +121,14 @@ module.exports = class MenuManager{
     let t = {click: this.click,label: template.label || "?"}
     if(template.acc){
       t.accelerator = template.acc.replace("CMD","CommandOrControl")
+      if(
+        t.accelerator.includes("Left") ||
+        t.accelerator.includes("Right") ||
+        t.accelerator.includes("Top") ||
+        t.accelerator.includes("Bottom")
+      ){
+        globalShortcut.register(t.accelerator, () => {this.click(t)})
+      }
     }
     return t
   }

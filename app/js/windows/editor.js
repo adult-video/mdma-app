@@ -1,4 +1,4 @@
-import {FSWrapper} from "../cores/av-core/js/frontend/fsWrapper.js"
+import {FSWrapper} from "../submodules/av/js/frontend/fsWrapper.js"
 
 const ipc = require("electron").ipcRenderer
 
@@ -13,6 +13,9 @@ window.addEventListener("DOMContentLoaded",function(){
     FILE.input = input.innerText
     save()
   })
+  input.addEventListener("blur",() => {
+    input.blur()
+  })
 
   ipc.on("refresh", (event,sender) => {
     refresh()
@@ -25,7 +28,7 @@ window.addEventListener("DOMContentLoaded",function(){
   }
 
   function update(){
-    if(FILE.input != input.innerText){
+    if(FILE.input != input.innerText && !(document.activeElement === input)){
       input.innerText = FILE.input
     }
   }

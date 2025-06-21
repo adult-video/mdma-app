@@ -1,5 +1,5 @@
-import {ACIDViewer} from "../cores/acid-core/js/acidViewer.js"
-import {FSWrapper} from "../cores/av-core/js/frontend/fsWrapper.js"
+import {ACIDViewer} from "../submodules/acid/js/acidViewer.js"
+import {FSWrapper} from "../submodules/av/js/frontend/fsWrapper.js"
 
 const ipc = require("electron").ipcRenderer
 

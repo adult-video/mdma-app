@@ -1,12 +1,12 @@
-const WindowManager = require("./js/cores/av-core/js/backend/windowManager.js")
-const FSManager = require("./js/cores/av-core/js/backend/fsManager.js")
-const MenuManager = require("./js/cores/av-core/js/backend/menuManager.js")
-const ActionManager = require("./js/cores/av-core/js/backend/actionManager.js")
+const WindowManager = require("./js/submodules/av/js/backend/windowManager.js")
+const FSManager = require("./js/submodules/av/js/backend/fsManager.js")
+const MenuManager = require("./js/submodules/av/js/backend/menuManager.js")
+const ActionManager = require("./js/submodules/av/js/backend/actionManager.js")
 
 const defaultfile = require("./js/templates/file.js")
 const menu = require("./js/templates/menu.js")
 
-const {app, ipcMain, dialog} = require("electron")
+const {app, ipcMain, dialog,globalShortcut} = require("electron")
 
 
 
@@ -51,13 +51,12 @@ const ah = new ActionManager({
     wm.send(f)
   }
 )
-const mm = new MenuManager(menu,ah)
+
 const fs = new FSManager(app.name.toLowerCase(),defaultfile)
 
 
 app.whenReady().then(() => {
-  
-
+  const mm = new MenuManager(menu,ah)
   ipcMain.on('refresh', (event,sender) => {
     fs.refresh()
     wm.refresh(sender)
