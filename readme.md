@@ -469,6 +469,36 @@ For when you want to type freely without having to worry about accidentally over
 
 The mappings done in the Mapping window are not affected by this setting. Lines that would have been mapped in another are treated as regular inputs when they are not mapped (in the mode `Terminal:Words` the line `A 1:C3:100` would map the `A` character to the word or character combination consisting of `1`,`:`,`C`,`3` and `0`)
 
+## ACID
+
+A Add -> adds two values together
+B Bitmap(n) -> returns a value array of all characters in the line
+C Clock(divider) -> returns a linear clock function
+D Divide -> divides two values
+E Expand(v) -> makes lower values larger
+F Frame(divider) -> returns the frame number
+G Greater(a,b) -> returns the greater of two values
+H cursorX -> returns the value of the x position of the cursor
+I Invert(v) -> inverts a value
+J cursorY -> returns the value of the y position of the cursor
+K Compress(v) -> makes larger values smaller
+L Lower(a,b) -> returns the lower of two values
+M Minus -> substracts two values from each other
+N Noise(p) -> steps through simplex noise
+O Perlin(p) -> steps through perlin noise
+P Plasma(p) -> steps through plasma
+Q Square(v) -> returns a square wave
+R Random -> returns a random value
+S Sine(v) -> returns a sine wave
+T Times -> multiplies two values
+U Uncertainty -> returns a random value that changes every bar
+V Triangle(v) -> returns a triangular function
+W Water(p) -> steps through a water shader
+X X -> returns x position on grid
+Y Y -> returns y position on grid
+Z Keypress -> returns boolean of any key pressed
+
+
 ## Releases
 
 Below you can find release notes on all major releases that had a dedicated build available. Look into the devlog over at [softboydev.itch.io/tram](https://softboydev.itch.io/tram) for more details.
@@ -498,3 +528,6 @@ Below you can find release notes on all major releases that had a dedicated buil
 ## Participation
 
 If you find any bugs feel free to send me an email or open an issue. Also feel free to send more default mapping to me or add them as a pull request.
+
+
+W44TC5
