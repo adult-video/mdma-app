@@ -3,8 +3,14 @@ import {TRAMWrapper} from "../submodules/tram/js/tramWrapper.js"
 import {IOWrapper} from "../submodules/av/js/frontend/ioWrapper.js"
 import {GUIWrapper} from "../submodules/av/js/frontend/guiWrapper.js"
 import {FSWrapper} from "../submodules/av/js/frontend/fsWrapper.js"
+import {Sampler} from "../submodules/tram/js/sampler.js"
 
 const ipc = require("electron").ipcRenderer
+const recorder = {
+  chunks: [],
+  stream: null,
+  device: null
+}
 
 window.addEventListener("DOMContentLoaded",function(){
   let FILE
@@ -57,7 +63,6 @@ window.addEventListener("DOMContentLoaded",function(){
       save()
     })
     input.addEventListener("keydown",function(e){
-      console.log(e)
       if(
         e.keyCode == 9 ||
         (e.keyCode == 37 || e.keyCode == 39) && e.shiftKey && e.metaKey
@@ -82,9 +87,6 @@ window.addEventListener("DOMContentLoaded",function(){
   }
 
   const actions = {
-    save: function(){
-      fs.export()
-    }.bind(this),
     refreshio: function(){
       FILE.io = io.refresh()
       save()
@@ -168,7 +170,30 @@ window.addEventListener("DOMContentLoaded",function(){
     backwards: function(){
       FILE.transport.delay -= 100
       save()
-    }
+    },
+    exportimage: function(){
+      acid.canvas.toBlob((blob) => {
+        fs.exportBlob(blob,"png")
+      })  
+    }.bind(this),
+    exportfragmentshader: function(){
+      let f = acid.fragmentShader
+      if(f){
+        let blob = new Blob([f], {type: 'text/plain'})
+        fs.exportBlob(blob,"frag")
+      }
+    }.bind(this),
+    startrecording: function(){
+      acid.EXPORT.recorder.start((chunks) => {
+        let blob = new Blob(chunks, {type: "video/webm" })
+        fs.exportBlob(blob,"webm")
+      })
+      document.body.classList.add("recording")
+    }.bind(this),
+    stoprecording: function(){
+      acid.EXPORT.recorder.stop()
+      document.body.classList.remove("recording")
+    }.bind(this)
   }
 
   const displays = {
@@ -192,6 +217,32 @@ window.addEventListener("DOMContentLoaded",function(){
   
   let gui = new GUIWrapper(actions,displays)
   let io = new IOWrapper()
+
+  io.addModule({
+    type: "sampler",
+    name: "Sampler",
+    input: false,
+    output: true,
+    interface: new Sampler("../js/submodules/tram/samples/",
+      [
+        "bd.wav",
+        "sd.wav",
+        "rs.wav",
+        "cp.wav",
+        "pc.wav",
+        "lt.wav",
+        "mt.wav",
+        "ht.wav",
+        "ch.wav",
+        "oh.wav",
+        "rd.wav",
+        "cy.wav",
+        "101.wav",
+        "303.wav",
+        "fm.wav",
+        "chord.wav"
+      ])
+  })
   let acid = new ACIDWrapper()
   let tram = new TRAMWrapper(io)
 

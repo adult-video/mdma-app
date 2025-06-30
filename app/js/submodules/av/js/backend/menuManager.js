@@ -43,9 +43,7 @@ module.exports = class MenuManager{
         label: "File",
         submenu: [
           {  click: this.click, type: "normal", label: "Save",accelerator: "CommandOrControl+S"},
-          {  click: this.click, type: "normal", label: "Open",accelerator: "CommandOrControl+O" },
-          { type: "separator" },
-          isMac ? { role: "close" } : { role: "quit" }
+          {  click: this.click, type: "normal", label: "Open",accelerator: "CommandOrControl+O" }
         ]
       },
       view: {
@@ -115,21 +113,32 @@ module.exports = class MenuManager{
     let w = menu.window
     delete menu.window
     menu.window = w
+    menu.file.submenu.push({ type: "separator" })
+    menu.file.submenu.push(isMac ? { role: "close" } : { role: "quit" })       
     return Object.values(menu)
   }
   #menuItemFromTemplate(template){
-    let t = {click: this.click,label: template.label || "?"}
-    if(template.acc){
-      t.accelerator = template.acc.replace("CMD","CommandOrControl")
-      if(
-        t.accelerator.includes("Left") ||
-        t.accelerator.includes("Right") ||
-        t.accelerator.includes("Top") ||
-        t.accelerator.includes("Bottom")
-      ){
-        globalShortcut.register(t.accelerator, () => {this.click(t)})
+    if(template.submenu){
+      let t = {label: template.label || "?", submenu: []}
+      for(let s of template.submenu){
+        t.submenu.push(this.#menuItemFromTemplate(s))
       }
+      return t
     }
-    return t
+    else{
+      let t = {click: this.click,label: template.label || "?"}
+      if(template.acc){
+        t.accelerator = template.acc.replace("CMD","CommandOrControl")
+        if(
+          t.accelerator.includes("Left") ||
+          t.accelerator.includes("Right") ||
+          t.accelerator.includes("Top") ||
+          t.accelerator.includes("Bottom")
+        ){
+          globalShortcut.register(t.accelerator, () => {this.click(t)})
+        }
+      }
+      return t
+    }
   }
 }

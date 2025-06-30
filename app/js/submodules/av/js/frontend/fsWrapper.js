@@ -51,18 +51,18 @@ export class FSWrapper{
 	      }
 	    }.bind(this));
 	}
-	export(){
-	    let blob = new Blob([JSON.stringify(this.#FILE.content)], {type: 'text/plain'})
+	exportBlob(blob,type){
 	    const url = window.URL.createObjectURL(blob)
 	    const a = document.createElement('a')
 	    a.style.display = 'none'
 	    a.href = url
-	    a.download = this.#FILE.name.toLowerCase() + "." + this.#FILE.type
+	    a.download = this.#FILE.name.toLowerCase() + "." + type
 	    document.body.appendChild(a)
 	    a.click()
 	    setTimeout(() => {
 	        document.body.removeChild(a)
 	        window.URL.revokeObjectURL(url)
 	    }, 100)
+
 	}
 }

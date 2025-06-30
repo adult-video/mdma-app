@@ -135,6 +135,8 @@ module.exports = class WindowManager{
       height: config.height || 600,
       minWidth: config.minWidth || 200,
       minHeight: config.minHeight || 200,
+      resizable: config.resizable || true,
+      fullscreenable: config.resizable || true,
       backgroundColor: config.backgroundColor || "#000000",
       icon: path.join(__dirname, { darwin: "icon.icns", linux: "icon.png", win32: "icon.ico" }[process.platform] || "icon.ico"),
       webPreferences: {
@@ -152,8 +154,9 @@ module.exports = class WindowManager{
         }
       })
     }
-    win.on('close', function() {
-    })
+    if(config.onclose){
+      win.on('close', config.onclose)
+    }
     win.on("unresponsive", () => {
       console.log("ERROR 61 - Window does not respond")
       app.quit()

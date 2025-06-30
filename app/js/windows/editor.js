@@ -31,6 +31,8 @@ window.addEventListener("DOMContentLoaded",function(){
     if(FILE.input != input.innerText && !(document.activeElement === input)){
       input.innerText = FILE.input
     }
+    document.documentElement.style.fontSize = FILE.settings.general.fontsize + "px"
+    document.documentElement.style.textAlign = FILE.settings.general.alignTextCenter ? "center" : "left"
   }
   function refresh(){
     fs.update(() => {

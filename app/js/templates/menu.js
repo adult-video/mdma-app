@@ -1,13 +1,27 @@
 module.exports = {
-  file: [],
-  view: [
+  file: [
     [
-      {label: "Zoom In",acc:"CMD+Shift+NumAdd"},
-      {label: "Zoom Out",acc:"CMD+Shift+NumSub"}
+      {label: "Open Settings",acc:"CMD+Shift+S"}
     ],
     [
-      {label: "Toggle UI",acc:"CMD+Shift+."},
-    ]
+      {label: "Export Image",acc:"CMD+E"},
+      {label: "Export Fragment Shader",acc:"CMD+F"}
+    ],
+    [
+      {label: "Start Recording"},
+      {label: "Stop Recording"}
+    ],
+  ],
+  view: [
+    [
+      {label: "Zoom In",acc:"CMD+NumAdd"},
+      {label: "Zoom Out",acc:"CMD+NumSub"},
+      { label: "Text Align", submenu: [{label: "Left"},{label: "Center"}]}
+    ],
+    [
+      {label: "Toggle UI",acc:"CMD+."},
+    ],
+
   ],
   edit: [],
   window: [
@@ -25,8 +39,8 @@ module.exports = {
       label: "Transport",
       menu: [
         [
-          {label: "Play Pause",acc: "CMD+Shift+P"},
-          {label: "Stop",acc: "CMD+Shift+S"}
+          {label: "Play Pause",acc: "Shift+Space"},
+          {label: "Stop",acc: "CMD+Shift+Space"}
         ],
         [
           {label: "Tempo Up",acc: "CMD+Shift+Numadd"},

@@ -32,6 +32,10 @@ export class GLWrapper{
     this.#init()
   }
 
+    get fragmentShader(){
+      return this.#locations.fragment_shader
+    }
+
   #init(){
     if(!this.#initialised){
       window.addEventListener("resize",this.#resize.bind(this));
@@ -40,7 +44,7 @@ export class GLWrapper{
       window.addEventListener("keyup",this.#handle.keyUp.bind(this));
     }
     try {
-      this.#gl = this.#canvas.getContext( 'experimental-webgl' );
+      this.#gl = this.#canvas.getContext('webgl', {preserveDrawingBuffer: true});
     }
     catch(error){}
     if(!this.#gl){
@@ -77,7 +81,7 @@ export class GLWrapper{
         this.parameters.screenWidth = this.#canvas.width;
         this.parameters.screenHeight = this.#canvas.height;
         this.parameters.screenSize = Math.max(this.parameters.screenWidth,this.parameters.screenHeight)
-        this.#gl.viewport( 0, 0, this.parameters.screenWidth, this.parameters.screenHeight );
+        this.#gl.viewport( 0, 0, this.parameters.screenWidth, this.parameters.screenHeight )
       }
   }
   #animate(){
@@ -89,7 +93,6 @@ export class GLWrapper{
   refresh(shaders,config,parameters){
     if(parameters){
       this.parameters = parameters
-      console.log(this.parameters)
     }
     else{
       this.parameters.running = config.transport.running

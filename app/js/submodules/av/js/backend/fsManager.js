@@ -71,8 +71,15 @@ module.exports = class FSManager{
   }
   saveToDiskWithPath(path,callback){
     this.refresh()
+    this.#saveFileToDisk(path,JSON.stringify(this.#FILE.content),callback)
+  }
+  exportShaderToDiskWithPath(path,callback){
+    this.refresh()
+    this.#saveFileToDisk(path,this.#FILE.content.acid.shader,callback)
+  }
+  #saveFileToDisk(path,content,callback){
     try {
-      fs.writeFileSync(path, JSON.stringify(this.#FILE.content), 'utf-8')
+      fs.writeFileSync(path,content,'utf-8')
     }
     catch(error){
       if(callback){
@@ -104,6 +111,33 @@ module.exports = class FSManager{
     this.#FILE.name = file.filename
     this.#FILE.type = file.filetype
     this.#FILE.content = file
+    this.#save()
+  }
+  getValueForKey(key){
+    let keys = key.split(".")
+      let o = this.#FILE.content
+      if(!o[keys[0]]){
+        return key
+      }
+      for(let key of keys){
+        if(o[key] != null){
+          o = o[key]
+        }
+      }
+      return o
+  }
+  setKeyToValue(key,value){
+    var schema = this.#FILE.content
+    var pList = key.split('.')
+    var len = pList.length
+    for(var i = 0; i < len-1; i++) {
+        var elem = pList[i]
+        if(!schema[elem]){
+          schema[elem] = {}
+        }
+        schema = schema[elem]
+    }
+    schema[pList[len-1]] = value
     this.#save()
   }
   #reset(){

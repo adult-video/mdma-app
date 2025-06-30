@@ -13,11 +13,42 @@ const {app, ipcMain, dialog,globalShortcut} = require("electron")
 const DEV = true
 const wm = new WindowManager()
 const ah = new ActionManager({
+    Left: () => {
+      fs.setKeyToValue("settings.general.alignTextCenter",false)
+      wm.refresh()
+    },
+    Center: () => {
+      fs.setKeyToValue("settings.general.alignTextCenter",true)
+      wm.refresh()
+    },
+    ZoomIn: () => {
+      let v = fs.getValueForKey("settings.general.fontsize")
+      v++
+      fs.setKeyToValue("settings.general.fontsize",Math.min(48,v))
+      wm.refresh()
+    },
+    ZoomOut: () => {
+      let v = fs.getValueForKey("settings.general.fontsize")
+      v--
+      fs.setKeyToValue("settings.general.fontsize",Math.max(8,v))
+      wm.refresh()
+    },
+    ToggleUI: () => {
+      console.log("Toggle UI")
+    },
     OpenViewer: () => {
       wm.open("viewer",{devTools:DEV})
     },
     OpenEditor: () => {
       wm.open("editor",{devTools:DEV})
+    },
+    OpenSettings: () => {
+      wm.open("settings",{
+        devTools:DEV,
+        resizable: false,
+        width: 400,
+        height: 400
+      })
     },
     Open: () => {
       wm.getOpenFilepath(fs.type,(data) => {
@@ -62,7 +93,9 @@ app.whenReady().then(() => {
     wm.refresh(sender)
   })
   
-  wm.open("index",{devTools:DEV})
+  wm.open("index",{devTools:DEV,onclose: () => {
+    app.quit()
+  }})
  
   app.on("gpu-process-crashed", () => {
     console.log("ERROR 64 - App GPU process has crashed")

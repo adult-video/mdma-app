@@ -1,17 +1,25 @@
 export class ACID{
-	#seed = 0
-	#fixedseed = 0
+	#seed
+	#fixedseed
 	#glWrapper
+	#config = {
+		globalBitmap: false
+	}
 
-	constructor(seed,glWrapper) {
-    	this.#seed = seed || 0
-    	this.#fixedseed = this.#seed
+	constructor(glWrapper) {
+    	this.#globalSeed = 42
     	this.#glWrapper = glWrapper
     	this.#init()
   	}
 
+  	set #globalSeed(seed){
+  		this.#seed = seed
+  		this.#fixedseed = seed
+  	}
+
 	static LOP_NUMBERS = "0123456789"
 	static HIP_NUMBERS = "abcdefghijklmnopqrstuvwxyz"
+	static LATIN_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("")
 	static NUMBERS = this.LOP_NUMBERS + this.HIP_NUMBERS //represent a fixed value
 	static OPERATORS = "ADTM" //are used to string together values
 	static VALUES = "HJRXYZIU" //represent a dynamic value, treated like numbers
@@ -19,7 +27,7 @@ export class ACID{
 	static CHARACTERS = this.OPERATORS + this.VALUES + this.FUNCTIONS
 	static VALUE_FUNC = this.NUMBERS + this.VALUES
 	static OP_CON = ["+","*","/","-"]
-	static FNC_CON = ["SQUARE(","SINE(","TRIANGLE(","INVERT(","EXPAND(","COMPRESS(","CLOCK(","PLASMA(","SIMPLEX(","PERLIN(","LOWER(","BIGGER(","SLBITMAP(","WATER(","FRAME("]
+	static FNC_CON = ["SQUARE(","SINE(","TRIANGLE(","INVERT(","EXPAND(","COMPRESS(","CLOCK(","PLASMA(","SIMPLEX(","PERLIN(","LOWER(","BIGGER(","BITMAP(","WATER(","FRAME("]
 	static MAX_ARG_PER_FNC = [1,1,1,1,1,1,1,1,1,2,2,1,1,1,1]
 
 	static analyzeChar(c){
@@ -87,13 +95,17 @@ export class ACID{
 
 	
   	#init(){
-  		this.update("")
+ 
   	}
-  	update(string){
-  		let shader = this.#convertStringToShader(string)
+  	update(config){
+  		this.#globalSeed = config.settings.acid.properties.seed || 42
+  		this.#config.globalBitmap = config.settings.acid.properties.globalBitmap
+  		this.#config.mapping = config.settings.acid.mapping
+  		let shader = this.#convertStringToShader(config)
   		return shader
   	}
-  	#convertStringToShader(string){
+  	#convertStringToShader(config){
+  		let string = config.input
   		let slBitmaps = []
       let slBitmapSizes = [0]
 	  	let lines = string.replaceAll("\n\n","\n").split("\n")
@@ -102,7 +114,7 @@ export class ACID{
 	    for(let l in words){
 	    	let line = words[l]
 		    if(
-		      	!(line && line[0].charAt(0) == "#")
+		      	!(line && line[0].charAt(0) == config.settings.acid.properties.commentIndicator)
 	      	){
 	        	_lines.push(lines[l])
 	      	}
@@ -243,6 +255,9 @@ export class ACID{
 	    return shader
   	}   
 	#convertCharacterToShader(char){
+		if(this.#config.mapping.includes(char)){
+			char = ACID.LATIN_ALPHABET[this.#config.mapping.indexOf(char)]
+		}
 	    let type = ACID.getTypeOfCharacter(char)
 	    let subtype = type == "NUMBER" ? ACID.getSubtypeOfNumber(char) : ACID.getSubtypeOfCharacter(char)
 	    let operation  = ACID.VALUE_FUNC.includes(char) ? "VALUE" : subtype
@@ -252,7 +267,11 @@ export class ACID{
 	      sub: subtype,
 	      func: operation
 	  	}
-	  	return ACID.analyzeChar(wrapper)
+	  	let a = ACID.analyzeChar(wrapper)
+	  	if(a.value == "BITMAP(" && !this.#config.globalBitmap){
+			a.value = "SLBITMAP("
+		}	
+	  	return a
 	}
 		
 }

@@ -7,9 +7,15 @@ export class GUIWrapper{
 		this.#DISPLAYS = displays
 		this.#connect()
   	}
+  	static isValidCharacterKeyCode(code){
+  		return code >= 48 && code != 91
+  	}
   	static getValueFromKeystring(string,obj){
   		let keys = string.split(".")
   		let o = obj
+  		if(!o[keys[0]]){
+  			return string
+  		}
   		for(let key of keys){
   			if(o[key] != null){
   				o = o[key]
@@ -17,6 +23,32 @@ export class GUIWrapper{
   		}
   		return o
   	}
+  	// static setValueFromKeystring(string,obj,value){
+  	// 	let keys = string.split(".")
+  	// 	let o = obj
+  	// 	for(let key of keys){
+  	// 		if(o[key] != null){
+  	// 			o = o[key]
+  	// 		}
+  	// 	}
+  	// 	o = value
+  	// 	console.log(o,obj)
+  	// 	return obj
+  	// }
+  	static setValueFromKeystring(path,value,obj) {
+	    var schema = obj
+	    var pList = path.split('.')
+	    var len = pList.length
+	    for(var i = 0; i < len-1; i++) {
+	        var elem = pList[i]
+	        if(!schema[elem]){
+	        	schema[elem] = {}
+	        }
+	        schema = schema[elem]
+	    }
+	    schema[pList[len-1]] = value
+	    return obj
+	}
   	#connect(){
   		let buttons = [].slice.call(document.body.getElementsByClassName("trigger"))
   		for(let button of buttons){
@@ -28,6 +60,8 @@ export class GUIWrapper{
   		}
   	}
   	update(file){
+  		document.documentElement.style.fontSize = file.settings.general.fontsize + "px"
+  		document.documentElement.style.textAlign = file.settings.general.alignTextCenter ? "center" : "left"
   		for(let display in this.#DISPLAYS){
   			this.#updateLabel(display,GUIWrapper.getValueFromKeystring(this.#DISPLAYS[display],file))	
   		}

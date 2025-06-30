@@ -5,6 +5,10 @@ export class TRAMWrapper{
   #TRAM
 
   #SEQUENCER = {
+    commentIndicator: "#",
+    mappingIndicator: "=",
+    dataDelimiter: ":",
+    mapping: {},
     input: "",
     buffer: [],
     operators: [],
@@ -36,6 +40,22 @@ export class TRAMWrapper{
     let tempoUpdateRequired = false
     let createLoopRequired = false
     let refreshRequired = false
+    if(file.settings.tram.mapping != this.#SEQUENCER.mapping){
+      this.#SEQUENCER.mapping = file.settings.tram.mapping
+      refreshRequired = true
+    }
+    if(file.settings.tram.properties.commentIndicator != this.#SEQUENCER.commentIndicator){
+      this.#SEQUENCER.commentIndicator = file.settings.tram.properties.commentIndicator
+      refreshRequired = true
+    }
+    if(file.settings.tram.properties.mappingIndicator != this.#SEQUENCER.mappingIndicator){
+      this.#SEQUENCER.mappingIndicator = file.settings.tram.properties.mappingIndicator
+      refreshRequired = true
+    }
+    if(file.settings.tram.properties.dataDelimiter != this.#SEQUENCER.dataDelimiter){
+      this.#SEQUENCER.dataDelimiter = file.settings.tram.properties.dataDelimiter
+      refreshRequired = true
+    }
     if(file.config.clock.tempo != this.#CLOCK.tempo){
       this.#CLOCK.tempo = file.config.clock.tempo
       tempoUpdateRequired = true
@@ -52,7 +72,6 @@ export class TRAMWrapper{
       this.#SEQUENCER.input = file.input
       refreshRequired = true
     }
-    
     if(tempoUpdateRequired){
       this.#updateTempo()
     }
@@ -62,14 +81,14 @@ export class TRAMWrapper{
     if(refreshRequired){
       this.#refresh()
     }
-    
+    this.#TRANSPORT.running = file.transport.running
   }
   #init(){
     this.#refresh("")
     this.start()
   }
   #refresh(){
-      this.setBuffer(this.#TRAM.textToBuffer(this.#SEQUENCER.input))
+      this.setBuffer(this.#TRAM.textToBuffer(this.#SEQUENCER))
   }
 
   playpause(){
@@ -124,7 +143,7 @@ export class TRAMWrapper{
   #createLoop(){
     this.#removeLoop()
     this.#CLOCK.pulses = this.#CLOCK.type ? 48 : 24
-    this.#CLOCK.time = 60000 / tempo / this.#CLOCK.pulses
+    this.#CLOCK.time = 60000 / this.#CLOCK.tempo / this.#CLOCK.pulses
     this.#CLOCK.start = performance.now()
     this.#CLOCK.lastframe = 0
     this.#CLOCK.interval = setInterval(function(){
@@ -142,7 +161,7 @@ export class TRAMWrapper{
     if(frame > this.#CLOCK.lastframe){
       this.#CLOCK.lastframe = frame
       if(this.#TRANSPORT.running){
-        let delta = timestamp % this.#CLOCK.TIME
+        let delta = timestamp % this.#CLOCK.time
         if(frame % (this.#CLOCK.pulses * 0.25) == 0){
           this.#play(delta)
           this.#SEQUENCER.position++
