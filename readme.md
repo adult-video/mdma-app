@@ -2,11 +2,11 @@
 
 MDMA is short for **M**ulti **D**ata **M**ultimedia **A**utomation and is a livecoding enviroment for generating visuals and sending MIDI triggers. It is a standalone application allowing multicoded livecoding with ACID and TRAM.
 
-Please refer to [this]() documentation for ACID and to [this]() documentation for TRAM.
+Please refer to [this](https://github.com/adult-video/acid) documentation for ACID and to [this](https://github.com/adult-video/tram) documentation for TRAM.
 
 ## Installation
 
-There are three ways to use MDMA. Either install a build for your platform from itch.io: [softboydev.itch.io/tram](https://softboydev.itch.io/tram)
+There are three ways to use MDMA. Either install a build for your platform from itch.io: [acidatm.itch.io/mdma](https://acidatm.itch.io/mdma)
 
 Or run it within electron.js
 
