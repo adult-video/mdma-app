@@ -24,10 +24,12 @@ export class TRAMWrapper{
     pulses: 48,
     start: 0,
     lastframe: 0,
+    lastpulse: 0,
     type: true,
-    source: false,
+    external: false,
     interval: null,
-    changeTimestamp: 0
+    changeTimestamp: 0,
+    delay: 0
   }
 
   constructor(io) {
@@ -64,14 +66,15 @@ export class TRAMWrapper{
       this.#CLOCK.type = file.config.clock.type
       createLoopRequired = true
     }
-    if(file.config.clock.type != this.#CLOCK.type){
-      this.#CLOCK.type = file.config.clock.type
-      createLoopRequired = true
-    }
     if(file.input != this.#SEQUENCER.input){
       this.#SEQUENCER.input = file.input
       refreshRequired = true
     }
+    if(file.config.io.clock.recieve != this.#CLOCK.external){
+      this.#CLOCK.external = file.config.io.clock.recieve
+      createLoopRequired = true
+    }
+    this.#CLOCK.delay = file.transport.delay
     if(tempoUpdateRequired){
       this.#updateTempo()
     }
@@ -82,10 +85,14 @@ export class TRAMWrapper{
       this.#refresh()
     }
     this.#TRANSPORT.running = file.transport.running
+    this.#TRANSPORT.stopped = file.transport.stopped
+    if(this.#TRANSPORT.stopped){
+      this.#SEQUENCER.position = 0
+    }
   }
   #init(){
-    this.#refresh("")
-    this.start()
+    // this.#refresh("")
+    // this.start()
   }
   #refresh(){
       this.setBuffer(this.#TRAM.textToBuffer(this.#SEQUENCER))
@@ -104,21 +111,15 @@ export class TRAMWrapper{
       }
     }
   }
-  start(){
-    this.#SEQUENCER.position = 0
-    this.#TRANSPORT.running = true
-    this.#TRANSPORT.stopped = false
-    this.#IO.start()
-  }
-  continue(){
-    this.#TRANSPORT.running = true
-    this.#IO.continue()
-  }
-  stop(){
-    this.#TRANSPORT.running = false
-    this.#TRANSPORT.stopped = true
-    this.#IO.stop()
-  }
+  // start(){
+  //   this.#SEQUENCER.position = 0
+  // }
+  // continue(){
+    
+  // }
+  // stop(){
+    
+  // }
 	#updateTempo(){
     let tempo = this.#CLOCK.tempo
     if(tempo > 0){
@@ -146,33 +147,41 @@ export class TRAMWrapper{
     this.#CLOCK.time = 60000 / this.#CLOCK.tempo / this.#CLOCK.pulses
     this.#CLOCK.start = performance.now()
     this.#CLOCK.lastframe = 0
-    this.#CLOCK.interval = setInterval(function(){
-      this.#tick()
-    }.bind(this), this.#CLOCK.time * 0.25);
+    if(!this.#CLOCK.external){
+      this.#CLOCK.interval = setInterval(function(){
+        this.tick()
+      }.bind(this), this.#CLOCK.time * 0.25)
+    }
   }
   #removeLoop(){
     if(this.#CLOCK.interval){
       clearInterval(this.#CLOCK.interval)
     }
   }
-  #tick(){
+  tick(){
     let timestamp = performance.now() - this.#CLOCK.start
     let frame = Math.floor(timestamp / this.#CLOCK.time)
     if(frame > this.#CLOCK.lastframe){
       this.#CLOCK.lastframe = frame
       if(this.#TRANSPORT.running){
         let delta = timestamp % this.#CLOCK.time
-        if(frame % (this.#CLOCK.pulses * 0.25) == 0){
+        let pulse = frame % (this.#CLOCK.pulses * 0.25)
+        if(pulse < this.#CLOCK.lastpulse){
           this.#play(delta)
           this.#SEQUENCER.position++
+          this.#CLOCK.lastpulse = 0
+        }
+        else{
+          this.#CLOCK.lastpulse = pulse
         }
         this.#IO.tick() 
       }
     }
   }
 	#play(delta){
+    delta += performance.now() + this.#CLOCK.delay + (this.#CLOCK.time * this.#CLOCK.pulses * 0.25) //lookahead
     for(let line of this.#SEQUENCER.buffer){
-        let p = this.#SEQUENCER.position % line.length
+        let p = (this.#SEQUENCER.position + 1) % line.length //lookahead
         if(line[p] && this.#SEQUENCER.operators[line[p]]){
           this.#IO.send(this.#SEQUENCER.operators[line[p]],delta)
         }

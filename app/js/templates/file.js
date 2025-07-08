@@ -14,7 +14,6 @@ module.exports = {
           B: [147,32,100]
         },
         properties: {
-          allowWords: false,
           commentIndicator: "#",
           mappingIndicator: "=",
           dataDelimiter: ":"
@@ -26,7 +25,8 @@ module.exports = {
         properties: {
           globalBitmap: false,
           seed: 42,
-          commentIndicator: "!"
+          commentIndicator: "!",
+          ignoreMappings: false
         }
       }
     },

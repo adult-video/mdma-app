@@ -1,6 +1,4 @@
 export class IOWrapper{
-  TRAM
-  #GUI = false
   
   static defaultinterfaces = [
     {
@@ -8,13 +6,6 @@ export class IOWrapper{
       name: "None",
       interface: null,
       input: true,
-      output: true
-    },
-    {
-      type: "console",
-      name: "Console",
-      interface: null,
-      input: false,
       output: true
     }
   ]
@@ -34,19 +25,25 @@ export class IOWrapper{
 
   #CONFIG = {
     transport: {
-      send: true,
-      recieve: false
+      send: false,
+      recieve: false,
+      running: false,
+      stopped: true
     },
     clock: {
-      send: true,
+      send: false,
       recieve: false
-    }
+    },
   }
 
   #MODULES = {
     extras: [],
     console: {},
     midi: null
+  }
+  #RECIEVERS = {
+    transport: [],
+    clock: []
   }
 
   constructor(){
@@ -63,6 +60,34 @@ export class IOWrapper{
       console.log( "Failed to get MIDI access - " + msg )
     }
     navigator.requestMIDIAccess().then(onMidiSuccess,onMIDIFailure)
+  }
+
+  update(file){
+    this.#CONFIG.transport.send = file.config.io.transport.send
+    this.#CONFIG.transport.recieve = file.config.io.transport.recieve
+    this.#CONFIG.clock.send = file.config.io.clock.send
+    this.#CONFIG.clock.recieve = file.config.io.clock.recieve
+    if(this.#CONFIG.transport.running != file.transport.running){
+      this.#CONFIG.transport.running = file.transport.running
+      if(this.#CONFIG.transport.stopped == file.transport.stopped){
+        if(this.#CONFIG.transport.running){
+          this.continue()
+        }
+        else{
+          this.pause()
+        }
+      }
+      
+    }
+    if(this.#CONFIG.transport.stopped != file.transport.stopped){
+      this.#CONFIG.transport.stopped = file.transport.stopped
+      if(this.#CONFIG.transport.stopped){
+        this.stop()
+      }
+      else{
+        this.start()
+      }
+    } 
   }
 
   refresh(){
@@ -127,12 +152,16 @@ export class IOWrapper{
     if(this.#IO.IN.module){
       if(this.#IO.IN.module.type == "midi"){
         this.#IO.IN.module.interface.onmidimessage = null
-        this.#IO.IN.module.interface.close()
+        if(this.#IO.IN.module.interface.state != "closed"){
+          this.#IO.IN.module.interface.close()
+        }
       }
     }
     if(this.#IO.OUT.module){
       if(this.#IO.OUT.module.type == "midi"){
-        this.#IO.OUT.module.interface.close()
+        if(this.#IO.OUT.module.interface.state != "closed"){
+          this.#IO.OUT.module.interface.close()
+        }
       }
     }
     this.#IO.IN.list = []
@@ -150,13 +179,15 @@ export class IOWrapper{
       }
     }
     if(this.#IO.OUT.module.type == "midi"){
-      this.#IO.OUT.module.interface.open()
+      if(this.#IO.OUT.module.interface.state == "closed"){
+        this.#IO.OUT.module.interface.open()
+      }
     }
   }
   #changeIO(io,d){
     io = io ? "OUT" : "IN"
     this.#IO[io].selected = ((this.#IO[io].list.length) + this.#IO[io].selected + d) % (this.#IO[io].list.length)
-    this.#updateIO()
+    this.refresh()
   }
   changeInput(d){
     this.#changeIO(0,d)
@@ -180,35 +211,47 @@ export class IOWrapper{
   recieveData(data){
     switch(this.#IO.IN.module.type){
       case "console":
+        console.log("recived " + data)
         break
       case "midi":
         let fb = data[0]
+        
+        if(fb != 248){
+          // console.log(data)
+        }
         switch(fb){
-          case 248: //start/play from stop
+          case 248: 
             if(this.#CONFIG.clock.recieve){
-              this.TRAM.tick()
+              for(let r of this.#RECIEVERS.clock){
+                r.tick()
+              }
             }
             break
           case 250: //start/play from stop
             if(this.#CONFIG.transport.recieve){
-              this.TRAM.start()
+              for(let r of this.#RECIEVERS.transport){
+                r.start()
+              }
             }
             break
           case 251: //continue/play from wherever
             if(this.#CONFIG.transport.recieve){
-              this.TRAM.continue()
+              for(let r of this.#RECIEVERS.transport){
+                r.continue()
+              }
             }
             break
           case 252: //stop/pause
             if(this.#CONFIG.transport.recieve){
-              this.TRAM.stop()
+              for(let r of this.#RECIEVERS.transport){
+                r.stop()
+              }
             }
             break
         }
         break
     }
   }
-
   tick(delta){
     delta = delta || 0
     if(this.#CONFIG.clock.send){
@@ -217,16 +260,9 @@ export class IOWrapper{
         console.log("tick")
         break
       case "midi":
-        if(this.#IO.OUT.module.interface.send){
-            this.OUTPUT.send([0xF8], delta)
-        } 
+        this.send([0xF8], delta)
         break
       }
-    }
-  }
-  playpause(){
-    if(this.#GUI){
-      this.#GUI.updateState("transport","paused")
     }
   }
   start(){
@@ -236,10 +272,8 @@ export class IOWrapper{
           console.log("started")
           break
         case "midi":
-          if(this.#IO.OUT.module.interface.send){
-            this.send([0xFF])
-            this.send([0xFA])
-          }
+          this.send([0xFF])
+          this.send([0xFA]) 
           break
       }
     }
@@ -251,32 +285,51 @@ export class IOWrapper{
           console.log("continued")
           break
         case "midi":
-          if(this.#IO.OUT.module.interface.send){
-            this.send([0xFB])
-          }
+          this.send([0xFB])
           break
       }
     }
-    if(this.#GUI){
-      this.#GUI.updateState("transport","playing")
+  }
+  pause(){
+    if(this.#CONFIG.transport.send){
+      switch(this.#IO.OUT.module.type){
+        case "console":
+          console.log("paused")
+          break
+        case "midi":
+          this.send([0xFC])
+          break
+      }
     }
   }
   stop(){
     if(this.#CONFIG.transport.send){
       switch(this.#IO.OUT.module.type){
         case "console":
-          console.log("continued")
+          console.log("stopped")
           break
         case "midi":
-          if(this.#IO.OUT.module.send){
-            this.send([0xFC])
-            this.send([0xFF])
-          }
+          this.send([176,123,0])
+          this.send([177,123,0])
+          this.send([178,123,0])
+          this.send([179,123,0])
+          this.send([180,123,0])
+          this.send([181,123,0])
+          this.send([182,123,0])
+          this.send([183,123,0])
+          this.send([184,123,0])
+          this.send([185,123,0])
+          this.send([186,123,0])
+          this.send([187,123,0])
+          this.send([188,123,0])
+          this.send([189,123,0])
+          this.send([190,123,0])
+          this.send([191,123,0])
+          this.send([0xFC])
+          this.send([0xFF])
+          this.#IO.OUT.module.interface.clear()
           break
       }
-    }
-    if(this.#GUI){
-      this.#GUI.updateState("transport","stopped")
     }
   }
   send(data,delta){
@@ -289,11 +342,11 @@ export class IOWrapper{
         break
       case "midi":
         if(this.#IO.OUT.module.interface.send){
-          let func = cmd[0]
+          let func = data[0]
           if(143 < func && func < 160){
-            this.#IO.OUT.module.interface.send([func - 16,cmd[1],cmd[2]])
+            this.#IO.OUT.module.interface.send([func - 16,data[1],data[2]])
           }
-          this.#IO.OUT.module.interface(cmd,delta)
+          this.#IO.OUT.module.interface.send(data,delta)
         }
         break 
     }
@@ -301,5 +354,11 @@ export class IOWrapper{
   addModule(m){
     this.#MODULES.extras.push(m)
     this.refresh()
+  }
+  addTransportReciever(r){
+    this.#RECIEVERS.transport.push(r)
+  }
+  addClockReciever(r){
+    this.#RECIEVERS.clock.push(r)
   }
 }

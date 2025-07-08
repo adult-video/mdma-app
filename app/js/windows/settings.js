@@ -1,19 +1,19 @@
-import {MenuWrapper} from "../submodules/av/js/frontend/menuWrapper.js"
 import {GUIWrapper} from "../submodules/av/js/frontend/guiWrapper.js"
 import {TRAM} from "../submodules/tram/js/tram.js"
 import {ACID} from "../submodules/acid/js/acid.js"
 import {FSWrapper} from "../submodules/av/js/frontend/fsWrapper.js"
 
-const ipc = require("electron").ipcRenderer
+const IPC = require("electron").ipcRenderer
 
 window.addEventListener("DOMContentLoaded",function(){
   let SET_FUNC = null
   let GUI
   let FILE
-  let fs = new FSWrapper(function(){
-    FILE = fs.get()
+  let FS = new FSWrapper(function(){
+    FILE = FS.get()
     init()
   })
+
   let actions = {
     increasefontsize: function(){
       let v = FILE.settings.general.fontsize
@@ -23,7 +23,6 @@ window.addEventListener("DOMContentLoaded",function(){
       save()
     },
     decreasefontsize: function(){
-      console.log("-")
       let v = FILE.settings.general.fontsize
       v--
       FILE.settings.general.fontsize = Math.max(8,v)
@@ -31,7 +30,6 @@ window.addEventListener("DOMContentLoaded",function(){
       save()
     },
     togglegeneralaligntextcenter: function(){
-      console.log("e")
       FILE.settings.general.alignTextCenter = !FILE.settings.general.alignTextCenter
       update()
       save()
@@ -45,8 +43,8 @@ window.addEventListener("DOMContentLoaded",function(){
   	selectsectiontram: function(){
   		document.getElementById("settings").classList = "sectionTram-active"
   	}.bind(this),
-    toggletramallowwords: function(){
-      FILE.settings.tram.properties.allowWords = !FILE.settings.tram.properties.allowWords
+    toggleacidignoremappings: function(){
+      FILE.settings.acid.properties.ignoreMappings = !FILE.settings.acid.properties.ignoreMappings
       update()
       save()
     }.bind(this),
@@ -128,7 +126,7 @@ window.addEventListener("DOMContentLoaded",function(){
   let displays = {
     generalFontsize: "settings.general.fontsize",
     generalAlignTextCenter: "settings.general.alignTextCenter",
-    tramAllowWords: "settings.tram.properties.allowWords",
+    acidIgnoreMappings: "settings.acid.properties.ignoreMappings",
     tramCommentIndicator: "settings.tram.properties.commentIndicator",
     tramMappingIndicator: "settings.tram.properties.mappingIndicator",
     tramDataDelimiter: "settings.tram.properties.dataDelimiter",
@@ -137,6 +135,7 @@ window.addEventListener("DOMContentLoaded",function(){
     acidCommentIndicator: "settings.acid.properties.commentIndicator",
     addTramMapping: "+"
   }
+
   function init(){
     for(let i in ACID.LATIN_ALPHABET){
       let c = ACID.LATIN_ALPHABET[i]
@@ -159,6 +158,7 @@ window.addEventListener("DOMContentLoaded",function(){
       th.addEventListener("click",function(e){
         delete FILE.settings.tram.mapping[m]
         update()
+        save()
       }.bind(false,m))
       th.addEventListener("mouseover",function(e){
         th.innerText = "-"
@@ -258,18 +258,19 @@ window.addEventListener("DOMContentLoaded",function(){
   }
 
   function save(){
-    fs.save(FILE,function(){
-      ipc.send("refresh","settings")
+    FS.save(FILE,function(){
+      IPC.send("refresh","settings")
     })
   }
 
   function refresh() {
-    fs.update(() => {
-      FILE = fs.get()
+    FS.update(() => {
+      FILE = FS.get()
       update()
     })
   }
-  ipc.on("refresh", (event,sender) => {
+
+  IPC.on("refresh", (event,sender) => {
     refresh()
   })
 })

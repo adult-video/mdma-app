@@ -133,7 +133,8 @@ module.exports = class MenuManager{
           t.accelerator.includes("Left") ||
           t.accelerator.includes("Right") ||
           t.accelerator.includes("Top") ||
-          t.accelerator.includes("Bottom")
+          t.accelerator.includes("Bottom") ||
+          t.accelerator.includes("Space")
         ){
           globalShortcut.register(t.accelerator, () => {this.click(t)})
         }

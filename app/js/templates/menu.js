@@ -1,7 +1,7 @@
 module.exports = {
   file: [
     [
-      {label: "Open Settings",acc:"CMD+Shift+S"}
+      {label: "Settings",acc:"CMD+Shift+S"}
     ],
     [
       {label: "Export Image",acc:"CMD+E"},
@@ -44,7 +44,8 @@ module.exports = {
         ],
         [
           {label: "Tempo Up",acc: "CMD+Shift+Numadd"},
-          {label: "Tempo Down",acc: "CMD+Shift+Numsub"}
+          {label: "Tempo Down",acc: "CMD+Shift+Numsub"},
+          {label: "Tap Tempo",acc: "CMD+Shift+T"}
         ],
         [
           {label: "Forwards",acc: "CMD+Shift+Right"},
@@ -65,8 +66,7 @@ module.exports = {
         [
           {label: "Toggle Clock Send"},
           {label: "Toggle Clock Recieve"},
-          {label: "Toggle Clock Type"},
-          {label: "Toggle Clock Source"}
+          {label: "Clock Type",submenu: [{label: "PPQ 24"},{label: "PPQ 48"}]}
         ],
         [
           {label: "Toggle Transport Send"},

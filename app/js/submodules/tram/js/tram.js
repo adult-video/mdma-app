@@ -8,7 +8,6 @@ export class TRAM{
 	#OPERATORS = {}
   #MAPPINGS = {}
   #WRAPPER
-  #MODE = 2
 
 	constructor(wrapper) {
     this.#WRAPPER = wrapper
@@ -69,10 +68,6 @@ export class TRAM{
   	this.#OPERATORS = o
     this.#WRAPPER.setOperators(o)
   }
-  setTerminalMode(mode){
-    mode = mode % 3
-    this.#MODE = mode
-  }
   updateOperators(mappings){
     this.setOperators({
         ...mappings,
@@ -101,7 +96,7 @@ export class TRAM{
           let midi = command.split(config.dataDelimiter) //tries to cast the command to midi
           let validMidi = midi.length == 3
           if(!this.#OPERATORS[operator]){ //only if the word hasnt been mapped yet
-            if(validMidi && this.#MODE == 2){ //when the cast to midi was successfull
+            if(validMidi){ //when the cast to midi was successfull
               midi[0] = TRAM.channelToData0(midi[0])
               midi[1] = TRAM.noteToData1(midi[1])
               midi[2] = TRAM.velocityToData2(midi[2])
@@ -146,11 +141,13 @@ export class TRAM{
                     let a = word.slice(word.indexOf(operator)+operator.length)
                     word = []
                     if(b){
-                      array.push(...b.split(""))
+                      // array.push(...b.split(""))
+                      array.push(b)
                     }
                     array.push(typeof command == "string" ? command : operator)
                     if(a){
-                      array.push(...a.split(""))
+                      // array.push(...a.split(""))
+                      array.push(a)
                     }
                 }
               }

@@ -9,7 +9,7 @@
     <div id="settings" class="sectionTram-active">
       <aside class="sidebar">
         <table class="sections">
-          <tr><th>Properties</th></tr>
+          <tr><td>Settings</td></tr>
           <tr><td><br></td></tr>
           <tr><th id="sectionGeneralButton" class="trigger" data-trigger="selectSectionGeneral">General</th></tr>
           <tr><th id="sectionAcidButton" class="trigger" data-trigger="selectSectionAcid">Acid</th></tr>
@@ -61,6 +61,15 @@
               <span id="acidCommentIndicator"  class="trigger" data-trigger="setAcidCommentIndicator"></span>
             </td>
           </tr>
+          <tr>
+            <th>
+              Ignore Mappings
+            </th>
+            <td>
+              <span id="acidIgnoreMappings"  class="trigger" data-trigger="toggleAcidIgnoreMappings" data-false="no" data-true="yes"></span>
+            </td>
+          </tr>
+          <tr><td><br></td></tr>
           <tr><td><br></td></tr>
         </table>
         <table>
@@ -146,15 +155,6 @@
       </div>
       <div class="section" id="sectionTram">
         <table>
-          <tr>
-            <th>
-              Allow Words
-            </th>
-            <td>
-              <span id="tramAllowWords"  class="trigger" data-trigger="toggleTramAllowWords" data-false="no" data-true="yes"></span>
-            </td>
-          </tr>
-          <tr><td><br></td></tr>
           <tr>
             <th>
               Comment Indicator

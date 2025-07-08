@@ -62,15 +62,15 @@ export class GLWrapper{
       this.parameters.mouseY = e.clientY / this.parameters.screenHeight
     },
     keyDown: function(e){
-      if(e.keyCode == 32){
+      // if(e.keyCode == 32){
         // e.preventDefault()
         this.parameters.spacePressed = true
-      }
+      // }
     },
     keyUp: function(e){
-      if(e.keyCode == 32){
+      // if(e.keyCode == 32){
         this.parameters.spacePressed = false
-      }
+      // }
     }    
   }
   #resize(){

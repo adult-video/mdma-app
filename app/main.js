@@ -33,21 +33,18 @@ const ah = new ActionManager({
       fs.setKeyToValue("settings.general.fontsize",Math.max(8,v))
       wm.refresh()
     },
-    ToggleUI: () => {
-      console.log("Toggle UI")
-    },
     OpenViewer: () => {
       wm.open("viewer",{devTools:DEV})
     },
     OpenEditor: () => {
       wm.open("editor",{devTools:DEV})
     },
-    OpenSettings: () => {
+    Settings: () => {
       wm.open("settings",{
         devTools:DEV,
         resizable: false,
-        width: 400,
-        height: 400
+        width: 800,
+        height: 800
       })
     },
     Open: () => {

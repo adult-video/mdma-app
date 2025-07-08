@@ -1,5 +1,7 @@
-# ACID [CORE]
+# ACID
 This is a stand-alone module that contains the core functionalities of my livecoding language ACID (which is short for **A**lgorithms **C**reate **I**mage **D**ata). For the packaged software please refer to [this]() repository.
+
+This repository acts as a submodule for my various applications. At the same time it can be run as a standalone web demo. For this the `index.html` file and the `script.js` file is used. All files used for the submodule are contained within the `/js/` folder.
 
 ## Concept
 
@@ -48,3 +50,27 @@ Y Y -> returns y position on grid
 Z Keypress -> returns boolean of space key pressed
 ```
 
+The number `0-9` act as floating point values ranging from `0.0` to `1.0`.
+
+Unmapped characters are simply ignored.
+
+Using a whitespace characters (such as a tab or regular space produced by the spacebar) will close all open functions and can be used to not pass a certain character as function argument (`WC` will step through the water shader based on the clock, while `W C`  will generate a static water texture that is then added to a solid value based on the clock). This does not work when using characters which are arithmetic (`2DC` and `2D C` produce the same output).
+
+Writing a `!` character infront of a line will treat the line as a comment. When using ACID within a dedicated application the character for comments can be changed. When using the application you can also change the seed, toggle between a global `bitmap` function and one that only takes the characters in the same line and additional characters that are to be treated as functions (this allows the remapping of already mapped characters as well as the usage of special characters as well as characters from other alphabets like `Ö` or `Ш` ).
+
+Support for lowercase characters is built-in. They are then being treated as floating point values with a higher resolution then the regular arabic numerals.
+
+## Planned features
+
+- A four colour gradient shader
+- A fractal shader
+- A fire/lava shader
+- Optional flag that allows more arguments per function (currently most shader functions use a maximum of one argument while they could take 3 or more)
+- Exposing color values of pixels as floating point values to be used as midi control changes or similiar
+- Passing midi control change values to shader functions as arguments
+- Post-processing that includes curve based colorgrading as well as indexed color modes to force certain asthetics and transformations on the canvas
+- Implementation of images, videos and real-time webcam video
+
+## Acknowledgement
+
+This project is inspired by [IBNIZ](http://viznut.fi/ibniz/) by Viznut, [ORCA](https://100r.co/site/orca.html) by Hundred Rabbits and [in:verse](https://inverse.website/) by noisyneuron.

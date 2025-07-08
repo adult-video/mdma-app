@@ -85,6 +85,9 @@ export class GUIWrapper{
   			
   		}
   	}
+  	forceUpdateLabel(id,text){
+  		this.#updateLabel(id,text)
+  	}
   	#updateState(id,state){
 		let container = document.getElementById(id)
   		if(container){

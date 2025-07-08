@@ -144,7 +144,8 @@ module.exports = class WindowManager{
         enableRemoteModule: true,
         nodeIntegration: config.nodeIntegration || true,
         contextIsolation: false,
-        backgroundThrottling: false
+        backgroundThrottling: false,
+        additionalArguments: ["--dev=" + config.devTools]
       }
     })
     if(config.midi){
