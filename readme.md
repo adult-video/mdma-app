@@ -1,8 +1,14 @@
+![](img/logo_banner.jpg)
+
 # MDMA
 
 MDMA is short for **M**ulti **D**ata **M**ultimedia **A**utomation and is a livecoding enviroment for generating visuals and sending MIDI triggers. It is a standalone application allowing multicoded livecoding with ACID and TRAM.
 
 Please refer to [this](https://github.com/adult-video/acid) documentation for ACID and to [this](https://github.com/adult-video/tram) documentation for TRAM.
+
+![](img/screenshot1.png)
+
+![](img/screenshot2.png)
 
 ## Installation
 
@@ -11,8 +17,8 @@ There are two ways to use MDMA. Either install a build for your platform from it
 Or run it within electron.js
 
 ```
-git clone --recurse-submodules https://github.com/acidatm/mdma.git
-cd tram/app
+git clone --recurse-submodules https://github.com/adult-video/mdma-app.git
+cd mdma-app/app
 npm install
 npm start
 ```
@@ -93,7 +99,7 @@ When clock recieve is turned on the internal clock will be disabled, regardless 
 
 ## Version History
 
-- **0.1 (Build)** - Initial release
+- **0.1** - Initial release
 
 ## Known Issues
 
