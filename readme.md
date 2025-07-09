@@ -6,7 +6,7 @@ Please refer to [this](https://github.com/adult-video/acid) documentation for AC
 
 ## Installation
 
-There are three ways to use MDMA. Either install a build for your platform from itch.io: [acidatm.itch.io/mdma](https://acidatm.itch.io/mdma)
+There are two ways to use MDMA. Either install a build for your platform from itch.io: [acidatm.itch.io/mdma](https://acidatm.itch.io/mdma)
 
 Or run it within electron.js
 
@@ -15,23 +15,6 @@ git clone --recurse-submodules https://github.com/acidatm/mdma.git
 cd tram/app
 npm install
 npm start
-```
-
-Or build a build of your choice with electron forge
-
-```
-git clone --recurse-submodules https://github.com/acidatm/mdma.git
-cd tram/app
-npm install
-npm run build_osx
-```
-
-You can run any of these build commands
-
-```
-build_osx -> Mac OS
-build_win -> Windows
-build_all -> Builds for both platforms
 ```
 
 ## Usage
@@ -48,7 +31,6 @@ From the UI you can access many functions that are also accessible from the main
 - Open - Allows you to open a previously state that was saved to file. Please note: currently only `.mdma` files are supported, `.acid` and `.tram` will be supported in the future
 - Settings - Will open the Settings window
 - Export Image - Will export a PNG of the current visual (without text). You can stop the sequencer and then use the `Transport>Forwards` and `Transport>Backwards` functions from the menu to slowly step through the visual.
-- Export Fragment Shader -> Will export the generated fragment shader in a `.frag` file. The uniforms are currently unset.
 - Start Recording -> Will start the inbuilt screen recorder for the visual (without text). A running recording is indicated by the blinking transport button in the upper right corner
 - Stop Recording -> Will stop a running recording and save it as a `.webm` video.
 
@@ -115,13 +97,15 @@ When clock recieve is turned on the internal clock will be disabled, regardless 
 
 ## Known Issues
 
-- Currently there is no Linux package available
+- Currently there are no build for Windows and Linux platforms available
 - Many keyboard shortcuts do not work on Windows
 - MIDI (see note above)
 
 ## Future Plans
 
+- Builds for all platforms
 - Add export for MIDI clips
+- Add export for fragment shader
 - Add support for premapped messages that are not note-on commands
 - Add support for OSC
 - Improve MIDI clock and transport implementation

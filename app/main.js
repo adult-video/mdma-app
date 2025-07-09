@@ -1,3 +1,5 @@
+const DEV = false
+
 const WindowManager = require("./js/submodules/av/js/backend/windowManager.js")
 const FSManager = require("./js/submodules/av/js/backend/fsManager.js")
 const MenuManager = require("./js/submodules/av/js/backend/menuManager.js")
@@ -9,8 +11,6 @@ const menu = require("./js/templates/menu.js")
 const {app, ipcMain, dialog,globalShortcut} = require("electron")
 
 
-
-const DEV = true
 const wm = new WindowManager()
 const ah = new ActionManager({
     Left: () => {

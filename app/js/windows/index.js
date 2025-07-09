@@ -189,7 +189,7 @@ window.addEventListener("DOMContentLoaded",function(){
     }),
     IO.addModule({
       type: "sampler",
-      name: "Sampler",
+      name: "X0X",
       input: false,
       output: true,
       interface: new Sampler("../js/submodules/tram/samples/x0x/",
@@ -234,6 +234,33 @@ window.addEventListener("DOMContentLoaded",function(){
        ])
     })
   }
+  else{
+    IO.addModule({
+      type: "sampler",
+      name: "Sampler",
+      input: false,
+      output: true,
+      interface: new Sampler("../js/submodules/tram/samples/",
+      [
+        "x0x/bd.wav",
+        "x0x/sd.wav",
+        "x0x/rs.wav",
+        "x0x/cp.wav",
+        "x0x/pc.wav",
+        "x0x/lt.wav",
+        "x0x/mt.wav",
+        "x0x/ht.wav",
+        "x0x/ch.wav",
+        "x0x/oh.wav",
+        "x0x/rd.wav",
+        "x0x/cy.wav",
+        "x0x/101.wav",
+        "frogs/eastern_spadefoot.wav",
+        "frogs/pickerel_frog.wav",
+        "frogs/bullfrog.wav"
+      ])
+    })
+  }
   
 
   let ACID = new ACIDWrapper()
@@ -247,7 +274,6 @@ window.addEventListener("DOMContentLoaded",function(){
 
   function save(){
     update()
-    console.log(FILE)
     FS.save(FILE,function(){
       IPC.send("refresh","index")
     })

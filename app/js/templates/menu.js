@@ -5,7 +5,7 @@ module.exports = {
     ],
     [
       {label: "Export Image",acc:"CMD+E"},
-      {label: "Export Fragment Shader",acc:"CMD+F"}
+      // {label: "Export Fragment Shader",acc:"CMD+F"}
     ],
     [
       {label: "Start Recording"},
