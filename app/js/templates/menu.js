@@ -1,13 +1,27 @@
 module.exports = {
-  file: [],
-  view: [
+  file: [
     [
-      {label: "Zoom In",acc:"CMD+Shift+NumAdd"},
-      {label: "Zoom Out",acc:"CMD+Shift+NumSub"}
+      {label: "Settings",acc:"CMD+Shift+S"}
     ],
     [
-      {label: "Toggle UI",acc:"CMD+Shift+."},
-    ]
+      {label: "Export Image",acc:"CMD+E"},
+      // {label: "Export Fragment Shader",acc:"CMD+F"}
+    ],
+    [
+      {label: "Start Recording"},
+      {label: "Stop Recording"}
+    ],
+  ],
+  view: [
+    [
+      {label: "Zoom In",acc:"CMD+NumAdd"},
+      {label: "Zoom Out",acc:"CMD+NumSub"},
+      { label: "Text Align", submenu: [{label: "Left"},{label: "Center"}]}
+    ],
+    [
+      {label: "Toggle UI",acc:"CMD+."},
+    ],
+
   ],
   edit: [],
   window: [
@@ -25,18 +39,17 @@ module.exports = {
       label: "Transport",
       menu: [
         [
-          {label: "Play Pause",acc: "CMD+Shift+P"},
-          {label: "Stop",acc: "CMD+Shift+S"}
+          {label: "Play Pause",acc: "Shift+Space"},
+          {label: "Stop",acc: "CMD+Shift+Space"}
         ],
         [
           {label: "Tempo Up",acc: "CMD+Shift+Numadd"},
-          {label: "Tempo Down",acc: "CMD+Shift+Numsub"}
+          {label: "Tempo Down",acc: "CMD+Shift+Numsub"},
+          {label: "Tap Tempo",acc: "CMD+Shift+T"}
         ],
         [
-          {label: "Jump 100ms Back",acc: "Option+Left"},
-          {label: "Jump 100ms Ahead",acc: "Option+Right"},
-          {label: "Jump 10ms Back",acc: "CMD+Shift+Option+Left"},
-          {label: "Jump 10ms Ahead",acc: "CMD+Shift+Option+Right"},
+          {label: "Forwards",acc: "CMD+Shift+Right"},
+          {label: "Backwards", acc: "CMD+Shift+Left"}
         ]
       ]
     },
@@ -53,8 +66,7 @@ module.exports = {
         [
           {label: "Toggle Clock Send"},
           {label: "Toggle Clock Recieve"},
-          {label: "Toggle Clock Type"},
-          {label: "Toggle Clock Source"}
+          {label: "Clock Type",submenu: [{label: "PPQ 24"},{label: "PPQ 48"}]}
         ],
         [
           {label: "Toggle Transport Send"},

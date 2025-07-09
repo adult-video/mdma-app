@@ -30,8 +30,10 @@ html,body{
   text-transform: uppercase;
   cursor: crosshair !important;
 }
-body{
-  font-size: 16px;
+body,h1,h2,h3,h4,h5,h6{
+  font-size: 1rem;
+  padding: 0;
+  margin: 0;
 }
 b{
   color: white;
@@ -74,7 +76,10 @@ canvas{
   outline: none;
   overflow: hidden;
   overflow-y: auto;
-  text-align: left;
+}
+.editor #input{
+  top: 0;
+  height: 100%;
 }
 #input *{
   font-family: "Monospace",monospace !important;
@@ -88,7 +93,6 @@ canvas{
   outline: none !important;
   margin: 0 !important;
   padding: 0 !important;
-  text-align: left !important;
 }
 .mapping #input,
 .terminal #input{
@@ -142,6 +146,7 @@ canvas{
   left: 0;
   /* background: black; */
   /* padding-right: 1em; */
+  text-align: left;
 }
 .header .center{
   position: absolute;
@@ -175,6 +180,20 @@ canvas{
 #transportStopped.active #transportRunning{
   background-image: url("./img/stop.png") !important;
 }
+.recording  #transportRunning{
+  animation: recording 1s linear infinite;
+}
+@keyframes recording{
+    0%{
+      opacity: 0;
+    }
+    50%{
+      opacity: 1;
+    }
+    100%{
+      opacity: 0;
+    }
+  }
 .footer{
   line-height: 1.2em;
   width: 100%;
@@ -193,6 +212,7 @@ canvas{
   /* background: black; */
   /* padding-right: 1em; */
   min-width: 300px;
+  text-align: left;
 }
 .footer .center{
   position: absolute;
@@ -201,6 +221,7 @@ canvas{
   transform: translateX(-50%);
   /* background: black; */
   /* padding: 0 1em; */
+  text-align: center;
 }
 .footer .right{
   position: absolute;
